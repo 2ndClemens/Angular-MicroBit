@@ -1,0 +1,11 @@
+<div style="text-align:center">
+  <button id="find"  (click) = "findMicrobit();">find</button>
+  <div #log id="log" style="white-space: pre" ></div>
+  {{microbitEvents.buttonastatechanged}}
+  {{microbitEvents.buttonbstatechanged}}<br>
+  {{microbitEvents.magnetometerdatachanged.x/32768 * 360 | number}}<br>
+  {{microbitEvents.magnetometerbearingchanged | json}}<br>
+  {{microbitEvents.accelerometerdatachanged | json}}
+ </div>
+ <app-three [rotation]="microbitEvents.accelerometerdatachanged" [bearing]="microbitEvents.magnetometerbearingchanged"></app-three>
+
