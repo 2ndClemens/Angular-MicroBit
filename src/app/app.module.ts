@@ -4,17 +4,17 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MicrobitComponent } from './components/microbit/microbit.component';
-import { ThreeComponent } from './components/three/three.component';
+import { Microbit3dComponent } from './components/microbit-3d.component/microbit-3d.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MicrobitComponent,
-    ThreeComponent
+    Microbit3dComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
