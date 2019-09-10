@@ -15,17 +15,23 @@ import * as THREE from 'three';
 })
 export class Microbit3dComponent implements OnInit {
   @Input() rotation: any = { x: 0, y: 0, z: 0 };
+  @Input() pressA: number;
+  @Input() pressB: number;
   scene = new THREE.Scene();
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
   cube: THREE.Mesh;
+  buttonA: THREE.Mesh;
+  buttonB: THREE.Mesh;
+  matterialButtonActive = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+  matterialButton = new THREE.MeshBasicMaterial({ color: 0x0000ff });
 
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
 
   @ViewChild('canvas', { static: true }) private canvasRef: ElementRef;
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResizeWindow() {
     this.onResize();
   }
@@ -55,6 +61,17 @@ export class Microbit3dComponent implements OnInit {
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     this.cube = new THREE.Mesh(geometry, material);
     this.scene.add(this.cube);
+
+    const geometry2 = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    this.buttonA = new THREE.Mesh(geometry2, this.matterialButton);
+    this.buttonA.translateX(-3);
+    this.buttonA.translateZ(.3);
+    this.cube.add(this.buttonA);
+
+    this.buttonB = new THREE.Mesh(geometry2, this.matterialButton);
+    this.buttonB.translateX(3);
+    this.buttonB.translateZ(.3);
+    this.cube.add(this.buttonB);
     this.onResize();
     this.animate();
   }
@@ -96,14 +113,59 @@ export class Microbit3dComponent implements OnInit {
       Math.PI *
       2;
 
-    this.cube.rotation.x = this.lowPass(roll, this.cube.rotation.x);
+    if (this.rotation.z < 0) {
+      if (roll > this.cube.rotation.x + Math.PI) {
+        this.cube.rotation.x += Math.PI * 2;
+      }
+
+      this.cube.rotation.x = this.lowPass(roll, this.cube.rotation.x);
+    } else {
+      if (-roll - Math.PI < this.cube.rotation.x - Math.PI) {
+        this.cube.rotation.x -= Math.PI * 2;
+      }
+      this.cube.rotation.x = this.lowPass(
+        -roll - Math.PI,
+        this.cube.rotation.x
+      );
+    }
+
+    // if (this.rotation.z < 0) {
+    // console.log(pitch);
+    if (pitch > this.cube.rotation.y + Math.PI) {
+      this.cube.rotation.y += Math.PI * 2;
+    }
+    if (pitch < this.cube.rotation.y - Math.PI) {
+      this.cube.rotation.y -= Math.PI * 2;
+    }
+
     this.cube.rotation.y = this.lowPass(pitch, this.cube.rotation.y);
+    // } else {
+    /* if (-pitch - Math.PI < this.cube.rotation.y - Math.PI ) {
+        this.cube.rotation.y -= Math.PI * 2;
+      } */
+    /* this.cube.rotation.y = this.lowPass(
+        pitch ,
+        this.cube.rotation.y
+      ); */
+
+    // console.log(this.cube.rotation.x);
+    // this.cube.rotation.y = this.lowPass(pitch, this.cube.rotation.y);
     // this.cube.rotation.z = this.lowPass(jaw, this.cube.rotation.z);
 
     // this.cube.rotation.x = (this.rotation.y * Math.PI) / 2;
     // this.cube.rotation.y = (this.rotation.x * Math.PI) / 2;
     // this.cube.rotation.z = (this.rotation.z * Math.PI) / 2;
     this.cube.rotation.order = 'XYZ';
+    if (this.pressA > 0){
+      this.buttonA.material = this.matterialButtonActive;
+    } else {
+      this.buttonA.material = this.matterialButton;
+    }
+    if (this.pressB > 0){
+      this.buttonB.material = this.matterialButtonActive;
+    } else {
+      this.buttonB.material = this.matterialButton;
+    }
     this.renderer.render(this.scene, this.camera);
   }
 
