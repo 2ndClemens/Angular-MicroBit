@@ -2,9 +2,9 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.0.
 
-##Demo
+## Demo
 
- (https://2ndclemens.github.io/Angular-MicroBit/)
+ https://2ndclemens.github.io/Angular-MicroBit/
 
 ## Development server
 
