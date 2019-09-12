@@ -82,7 +82,7 @@ export class Microbit3dComponent implements OnInit {
       for (let m = 0; m < 5; m++) {
         this.leds.push(new THREE.Mesh(geometry3, this.matterialLed));
         this.leds[this.leds.length - 1].translateX(-n + 2);
-        this.leds[this.leds.length - 1].translateZ(-m + 2);
+        this.leds[this.leds.length - 1].translateY(-m + 2);
         this.leds[this.leds.length - 1].translateZ(0.3);
         this.cube.add(this.leds[this.leds.length - 1]);
       }
