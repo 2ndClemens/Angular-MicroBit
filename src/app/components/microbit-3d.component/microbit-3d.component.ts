@@ -23,8 +23,10 @@ export class Microbit3dComponent implements OnInit {
   cube: THREE.Mesh;
   buttonA: THREE.Mesh;
   buttonB: THREE.Mesh;
+  leds: THREE.Mesh[] = [];
   matterialButtonActive = new THREE.MeshBasicMaterial({ color: 0xff0000 });
   matterialButton = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+  matterialLed = new THREE.MeshBasicMaterial({ color: 0x0000ff });
 
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
@@ -64,16 +66,27 @@ export class Microbit3dComponent implements OnInit {
 
     const geometry2 = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     this.buttonA = new THREE.Mesh(geometry2, this.matterialButton);
-    this.buttonA.translateX(-3);
-    this.buttonA.translateZ(.3);
+    this.buttonA.translateX(-5);
+    this.buttonA.translateZ(0.3);
     this.cube.add(this.buttonA);
 
     this.buttonB = new THREE.Mesh(geometry2, this.matterialButton);
-    this.buttonB.translateX(3);
-    this.buttonB.translateZ(.3);
+    this.buttonB.translateX(5);
+    this.buttonB.translateZ(0.3);
     this.cube.add(this.buttonB);
     this.onResize();
     this.animate();
+
+    const geometry3 = new THREE.BoxGeometry(0.3, 0.5, 0.5);
+    for (let n = 0; n < 5; n++) {
+      for (let m = 0; m < 5; m++) {
+        this.leds.push(new THREE.Mesh(geometry3, this.matterialLed));
+        this.leds[this.leds.length - 1].translateX(-n + 2);
+        this.leds[this.leds.length - 1].translateZ(-m + 2);
+        this.leds[this.leds.length - 1].translateZ(0.3);
+        this.cube.add(this.leds[this.leds.length - 1]);
+      }
+    }
   }
   animate() {
     requestAnimationFrame(this.animate.bind(this));
@@ -156,12 +169,12 @@ export class Microbit3dComponent implements OnInit {
     // this.cube.rotation.y = (this.rotation.x * Math.PI) / 2;
     // this.cube.rotation.z = (this.rotation.z * Math.PI) / 2;
     this.cube.rotation.order = 'XYZ';
-    if (this.pressA > 0){
+    if (this.pressA > 0) {
       this.buttonA.material = this.matterialButtonActive;
     } else {
       this.buttonA.material = this.matterialButton;
     }
-    if (this.pressB > 0){
+    if (this.pressB > 0) {
       this.buttonB.material = this.matterialButtonActive;
     } else {
       this.buttonB.material = this.matterialButton;
