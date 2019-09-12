@@ -4,7 +4,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Demo
 
- https://2ndclemens.github.io/Angular-MicroBit/
+ `https://2ndclemens.github.io/Angular-MicroBit/`
 
 ## Development server
 
