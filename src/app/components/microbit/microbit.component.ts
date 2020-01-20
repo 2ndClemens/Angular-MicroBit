@@ -7,6 +7,7 @@ import * as microbit from 'microbit-web-bluetooth';
   styleUrls: ['./microbit.component.scss']
 })
 export class MicrobitComponent implements OnInit {
+  services: any;
   microbitEvents = {
     accelerometerdatachanged: { x: 0, y: 0, z: 0 },
     buttonastatechanged: 0,
@@ -30,66 +31,66 @@ export class MicrobitComponent implements OnInit {
   async findMicrobit() {
     const device = await microbit.requestMicrobit(window.navigator.bluetooth);
     if (device) {
-      const services = await microbit.getServices(device);
-      if (services.deviceInformationService) {
+      this.services = await microbit.getServices(device);
+      if (this.services.deviceInformationService) {
         this.logJson(
-          await services.deviceInformationService.readDeviceInformation()
+          await this.services.deviceInformationService.readDeviceInformation()
         );
       }
-      if (services.uartService) {
-        services.uartService.addEventListener('receiveText', this.eventHandler);
-        await services.uartService.send(
+      if (this.services.uartService) {
+        this.services.uartService.addEventListener('receiveText', this.eventHandler);
+        await this.services.uartService.send(
           new Uint8Array([104, 101, 108, 108, 111, 58])
         ); // hello:
       }
-      if (services.ledService) {
-        await services.ledService.writeMatrixState([
+      if (this.services.ledService) {
+        await this.services.ledService.writeMatrixState([
           [true, false, true, false, false],
           [true, true, true, true, true],
           [false, false, true, false, false],
           [false, true, false, true, false],
           [true, false, false, false, true]
         ]);
-        this.logJson(await services.ledService.readMatrixState());
-        await services.ledService.setScrollingDelay(50);
-        this.log(await services.ledService.getScrollingDelay());
-        await services.ledService.writeText('Web BLE');
+        this.logJson(await this.services.ledService.readMatrixState());
+        await this.services.ledService.setScrollingDelay(50);
+        this.log(await this.services.ledService.getScrollingDelay());
+        await this.services.ledService.writeText('Web BLE');
       }
-      if (services.buttonService) {
-        services.buttonService.addEventListener(
+      if (this.services.buttonService) {
+        this.services.buttonService.addEventListener(
           'buttonastatechanged',
           this.eventHandler
         );
-        services.buttonService.addEventListener(
+        this.services.buttonService.addEventListener(
           'buttonbstatechanged',
           this.eventHandler
         );
       }
-      if (services.temperatureService) {
-        await services.temperatureService.setTemperaturePeriod(2000);
-        this.log(await services.temperatureService.getTemperaturePeriod());
-        services.temperatureService.addEventListener(
+      if (this.services.temperatureService) {
+        await this.services.temperatureService.setTemperaturePeriod(2000);
+        this.log(await this.services.temperatureService.getTemperaturePeriod());
+        this.services.temperatureService.addEventListener(
           'temperaturechanged',
           this.eventHandler
         );
       }
-      if (services.accelerometerService) {
-        await services.accelerometerService.setAccelerometerPeriod(80);
-        this.log(await services.accelerometerService.getAccelerometerPeriod());
-        services.accelerometerService.addEventListener(
+      if (this.services.accelerometerService) {
+        await this.services.accelerometerService.setAccelerometerPeriod(80);
+        this.log(await this.services.accelerometerService.getAccelerometerPeriod());
+        this.services.accelerometerService.addEventListener(
           'accelerometerdatachanged',
           this.eventHandler
         );
       }
-      if (services.magnetometerService) {
+      if (this.services.magnetometerService) {
         const startMagnetometer = async () => {
-          await services.magnetometerService.setMagnetometerPeriod(80);
-          this.log(await services.magnetometerService.getMagnetometerPeriod());
-          services.magnetometerService.addEventListener(
+          await this.services.magnetometerService.setMagnetometerPeriod(80);
+          this.log(await this.services.magnetometerService.getMagnetometerPeriod());
+          this.services.magnetometerService.addEventListener(
             'magnetometerdatachanged',
             this.eventHandler
           );
-          services.magnetometerService.addEventListener(
+          this.services.magnetometerService.addEventListener(
             'magnetometerbearingchanged',
             this.eventHandler
           );
@@ -111,6 +112,29 @@ export class MicrobitComponent implements OnInit {
           }
         }, 4000); */
       }
+    }
+  }
+
+  async showIcon(){
+    if (this.services.ledService) {
+      await this.services.ledService.writeMatrixState([
+        [true, false, true, false, false],
+        [true, true, true, true, true],
+        [false, false, true, false, false],
+        [false, true, false, true, false],
+        [true, false, false, false, true]
+      ]);
+    }
+  }
+  async showIcon2(){
+    if (this.services.ledService) {
+      await this.services.ledService.writeMatrixState([
+        [false, false, false, false, false],
+        [false, false, false, false, false],
+        [false, false, true, false, false],
+        [false, true, false, true, false],
+        [true, false, false, false, true]
+      ]);
     }
   }
 }
